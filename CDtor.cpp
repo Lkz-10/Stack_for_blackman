@@ -41,6 +41,7 @@ void StackDtor(Stk_t* stk)
 
     free((char*) stk->data ON_BIRDS(- CANARY_ADDED_SIZE));
 
+    stk->data     = NULL;
     stk->capacity = CAPACITY_MIN;
     stk->sz       = 0;
 }

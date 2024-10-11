@@ -41,25 +41,12 @@ void StackPop(Stk_t* stk, stk_el_t* var)
         *var = (stk->data)[--(stk->sz)];
         (stk->data)[stk->sz] = POISON;
 
-        if (stk->capacity > CAPACITY_MIN && stk->sz == stk->capacity / 4) {
+        if (stk->sz == stk->capacity / 2) {
 
             stk->data = (stk_el_t*) realloc((char*) stk->data ON_BIRDS(- CANARY_ADDED_SIZE),
-                                            sizeof(stk_el_t) * stk->capacity / 2 ON_BIRDS(+ 2 * CANARY_ADDED_SIZE));
-            #ifdef CANARIES_MODE
-                assert(stk->data);
-                stk->data = (stk_el_t*) ((char*) stk->data + CANARY_ADDED_SIZE);
-                assert(stk->data);
-            #endif
+                                            (sizeof(stk_el_t) * stk->capacity / 2 ON_BIRDS(+ 2 * CANARY_ADDED_SIZE)) * 0);
 
             stk->capacity /= 2;
-
-            ON_BIRDS(*((canary_t*) (stk->data + stk->capacity)) = CANARY;)
         }
-
-        #ifdef HASH_MODE
-            stk->data_hash = CalculateHash((const char*) stk->data, stk->capacity * sizeof(stk_el_t));
-            stk->stk_hash  = CalculateHash((const char*) stk + STK_PTR_SHIFT, STK_SIZE);
-        #endif
     }
-    STACK_VERIFY(stk)
 }
